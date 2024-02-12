@@ -4,7 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66b59777-d0be-4191-b961-5554474f0e79" name="Changes" comment="" />
+    <list default="true" id="66b59777-d0be-4191-b961-5554474f0e79" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/Synchronization.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/DeadLock$A.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/DeadLock$B.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/DeadLock.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/LockExample$Counter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/LockExample.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/Product.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/ThreadComm.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/ThreadPull$A.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/ThreadPull$CalSum.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multithreading/ThreadPull.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DeadLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DeadLock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LockExample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/LockExample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Basic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Product.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ThreadComm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/ThreadCommunication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ThreadPull.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/ThreadPull.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,6 +38,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -29,40 +54,66 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "settings.editor.selected.configurable": "editor.preferences.folding"
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/pankaj kumar/Desktop/practice/Java/multithreading",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Language Defaults"
   }
 }]]></component>
   <component name="RunManager" selected="Application.ThreadPull">
-    <configuration name="DeadLock" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="DeadLock" />
+    <configuration name="Basic" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.Basic" />
       <module name="multithreading" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="LockExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="LockExample" />
+    <configuration name="LockExample (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.LockExample" />
       <module name="multithreading" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
+    <configuration name="Synchronization" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.Synchronization" />
       <module name="multithreading" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ThreadComm" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ThreadComm" />
+    <configuration name="Synchronization" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.Synchronization" />
       <module name="multithreading" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration name="ThreadPull" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ThreadPull" />
+      <option name="MAIN_CLASS_NAME" value="main.ThreadPull" />
       <module name="multithreading" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -71,10 +122,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.ThreadPull" />
-        <item itemvalue="Application.LockExample" />
-        <item itemvalue="Application.ThreadComm" />
-        <item itemvalue="Application.DeadLock" />
-        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.LockExample (1)" />
+        <item itemvalue="Application.Basic" />
+        <item itemvalue="Application.Synchronization (1)" />
+        <item itemvalue="Application.Synchronization" />
       </list>
     </recent_temporary>
   </component>
