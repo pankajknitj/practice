@@ -1,4 +1,4 @@
-package main;
+package main.multithreading;
 
 import java.util.Arrays;
 import java.util.List;

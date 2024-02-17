@@ -1,4 +1,4 @@
-package main;
+package main.multithreading;
 
 public class Basic {
     static Thread t1 = null;
