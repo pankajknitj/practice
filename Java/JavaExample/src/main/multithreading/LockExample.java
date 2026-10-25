@@ -1,5 +1,6 @@
 package main.multithreading;
 
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -25,7 +26,22 @@ public class LockExample {
                l.unlock();
            }
            else System.out.println("lock not granted");
+       }
 
+       boolean increaseCount(int value){
+           try{
+               /* wait till lock is acquired*/
+               System.out.println(Thread.currentThread().getName() + " acquiring lock");
+               l.lock();
+               System.out.println(Thread.currentThread().getName() + " acquired lock");
+               count+=value;
+           }catch(Exception e){
+               return false;
+           }
+           finally {
+               l.unlock();
+           }
+           return true;
        }
    }
 
@@ -34,10 +50,12 @@ public class LockExample {
         /* Thread-1*/
         Thread t1 = new Thread(()->{
             c.setValue(12);
+            c.increaseCount(1);
         });
         /* Thread-2*/
         Thread t2 = new Thread(()->{
             c.setValue(12);
+            c.increaseCount(1);
         });
 
         t1.start();
