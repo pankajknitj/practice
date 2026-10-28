@@ -1,29 +1,27 @@
 package main.lld.behavioral.chainofresponsibility;
 
+import main.lld.behavioral.chainofresponsibility.face.RequestHandler;
+import main.lld.behavioral.chainofresponsibility.impl.*;
+import main.lld.behavioral.chainofresponsibility.model.Request;
+
 public class Client {
     public static void main(String[] args) {
-        LeaveApplicationHandlerFactory leaveApplicationHandlerFactory = new LeaveApplicationHandlerFactory();
-        LeaveApprover leaveApprover = leaveApplicationHandlerFactory.getLeaveApplicationHandler();
+        //Handlers
+        RequestHandler authHandler = new AuthHandler();
+        RequestHandler authzHandler = new Authzhandler();
+        RequestHandler rateLimitHandler = new RateLimitingHandler();
+        RequestHandler dataValidationHandler = new DataValidationHandler();
+        RequestHandler bussLogicHandler = new BussinessLogicHandler();
 
-        LeaveApplication leaveApplication1 = new LeaveApplication();
-        leaveApplication1.setLeaveType(LeaveApplication.LeaveType.SickLeave);
-        leaveApplication1.setDuration(2);
+        //Handlers chain building
+        authHandler.setNextHandler(authzHandler);
+        authzHandler.setNextHandler(rateLimitHandler);
+        rateLimitHandler.setNextHandler(dataValidationHandler);
+        dataValidationHandler.setNextHandler(bussLogicHandler);
 
-        leaveApprover.processLeaveApplication(leaveApplication1);
-        System.out.println("Leave Application 1: " + leaveApplication1);
-
-        LeaveApplication leaveApplication2 = new LeaveApplication();
-        leaveApplication2.setLeaveType(LeaveApplication.LeaveType.CasualLeave);
-        leaveApplication2.setDuration(5);
-
-        leaveApprover.processLeaveApplication(leaveApplication2);
-        System.out.println("Leave Application 2: " + leaveApplication2);
-
-        LeaveApplication leaveApplication3 = new LeaveApplication();
-        leaveApplication3.setLeaveType(LeaveApplication.LeaveType.EarnedLeave);
-        leaveApplication3.setDuration(10);
-
-        leaveApprover.processLeaveApplication(leaveApplication3);
-        System.out.println("Leave Application 3: " + leaveApplication3);
+        Request request1 = new Request("pankaj","Admin",4,"knok knok");
+        //invoking first member of chain
+        authHandler.handle(request1);
     }
+
 }

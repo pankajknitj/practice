@@ -931,6 +931,260 @@ customize specific parts of the algorithm.
 **Two characteristics define the pattern:** Algorithm skeleton in the base class and Subclasses override specific steps.
 
 ![img_22.png](img_22.png)
+
+**Practical Example:** Online Order Processing
+Let us work through a second example to reinforce the pattern. This time, we are building an order processing pipeline for an e-commerce platform. Every order goes through the same sequence of steps: validate the order, calculate the total, process the payment, and send a confirmation.
+
+But the details differ based on the order type: standard orders, Prime orders (free shipping, priority processing), and international orders (customs handling, currency conversion).
+
+![img_23.png](img_23.png)
+
+```java
+//Here we will define the template method
+public abstract class OrderProcessor {
+    // template method
+    public void processOrder(Order order){
+        //specific validation,total calculation and payment processing for each order type
+        validateOrder(order);
+        double total = calculateTotal(order);
+        double payable = applyDiscount(total);
+        processPayment(payable);
+        sendConfirmation(order);
+    }
+
+    protected abstract void validateOrder(Order order);
+    protected abstract double calculateTotal(Order order);
+    protected abstract void processPayment(double payable);
+    //Hook - Optional
+    protected double applyDiscount(double total){return total;}
+    //common for all
+    protected void sendConfirmation(Order order){
+        System.out.println("Order confirmation has been sent for order-id: "+order.getOrderId());
+    }
+}
+
+//Concrete processor with override abstract methods
+public class StandarrdOrderProcessor extends OrderProcessor {
+    @Override
+    protected void validateOrder(Order order) {
+        System.out.println("Standard Order Processor: Validating order.");
+    }
+
+    @Override
+    protected double calculateTotal(Order order) {
+        System.out.println("Standard Order Processor: Calculating total");
+        double total = 0;
+        for(Item item : order.getItems()){
+            total += item.getPrice();
+        }
+        return total;
+    }
+
+    @Override
+    protected void processPayment(double payable) {
+        System.out.println("Standard Order Processor: Processing payment");
+    }
+}
+
+public class PrimeOrderProcessing extends OrderProcessor{
+    @Override
+    protected void validateOrder(Order order) {
+        System.out.println("PrimeOrder: Validating order.");
+    }
+
+    @Override
+    protected double calculateTotal(Order order) {
+        System.out.println("PrimeOrder: Calculating total");
+        double total = 0;
+        for(Item item : order.getItems()){
+            total += item.getPrice();
+        }
+        return total;
+    }
+
+    @Override
+    protected void processPayment(double payable) {
+        System.out.println("PrimeOrder: Processing payment");
+    }
+    //Discount only for prime customer
+    @Override
+    protected double applyDiscount(double total){
+        System.out.println("PrimeOder: Applying 10% Discount");
+        return total * 0.9;
+    }
+}
+public class InternationalOrderProcessor extends OrderProcessor{
+    @Override
+    protected void validateOrder(Order order) {
+        System.out.println("International order: Validating order.");
+    }
+
+    @Override
+    protected double calculateTotal(Order order) {
+        System.out.println("International order: Calculating total");
+        double total = 0;
+        for(Item item : order.getItems()){
+            total += item.getPrice();
+        }
+        // In dollar
+        return total/80.00;
+    }
+
+    @Override
+    protected void processPayment(double payable) {
+        System.out.println("International order: Processing payment");
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        List<Item> items = new ArrayList<>(List.of(new Item("mac",150000), new Item("charger",10000)));
+        Order order = new Order(1001, items);
+
+        OrderProcessor standardOP = new StandarrdOrderProcessor();
+        standardOP.processOrder(order);
+
+        OrderProcessor primeOP = new PrimeOrderProcessing();
+        primeOP.processOrder(order);
+
+        OrderProcessor internationalOP = new InternationalOrderProcessor();
+        internationalOP.processOrder(order);
+    }
+
+}
+
+```
+
+## Chain of Responsibility Design Patern
+This pattern is useful when:
+- A request must be handled by one of many possible handlers, and you don’t want the sender to be tightly coupled to any specific one.
+- You want to decouple request logic from the code that processes it.
+- You want to flexibly add, remove, or reorder handlers without changing the client code.
+```text
+The Chain of Responsibility Design Pattern is a behavioral pattern that lets you pass requests along a chain of handlers, 
+allowing each handler to decide whether to process the request or pass it to the next handler in the chain.
+```
+handler in the chain can either:
+- **Handle** the request and stop the chain
+- **Pass** it to the next handler in the chain
+- **Handle** the request and then pass it along
+
+![img_24.png](img_24.png)
+
+![img_25.png](img_25.png)
+
+**The Problem:** Handling HTTP Requests
+
+![img_26.png](img_26.png)
+
+```java
+public class Request {
+    private String user;
+    private String userRole;
+    private int reqCount;
+    private String payload;
+}
+```
+```java
+//Handler Contract
+public interface RequestHandler {
+    void setNextHandler(RequestHandler handler);
+    void handle(Request request);
+}
+//Base handler have common methods to avoid duplication
+public abstract class BaseHandler implements RequestHandler{
+    private RequestHandler nextHandler;
+
+    @Override
+    public void setNextHandler(RequestHandler handler){
+        this.nextHandler = handler;
+    }
+
+    public void forward(Request request){
+        if(nextHandler != null){
+            System.out.println("forwarding request to next handler");
+            nextHandler.handle(request);
+        }
+    }
+}
+```
+```java
+//authentication Handler
+public class AuthHandler extends BaseHandler {
+    @Override
+    public void handle(Request request) {
+        if(request.getUser() != null){
+            System.out.println("Auth completed");
+            forward(request);
+        }else{
+            System.out.println("Auth Denied");
+        }
+    }
+}
+//Authorization handler
+public class Authzhandler extends BaseHandler {
+    @Override
+    public void handle(Request request) {
+        if(request.getUserRole().equals("Admin")){
+            System.out.println("Authorization Completed");
+            forward(request);
+        }else{
+            System.out.println("Authorization denied");
+        }
+    }
+}
+public class RateLimitingHandler extends BaseHandler {
+    @Override
+    public void handle(Request request) {
+        if(request.getReqCount()>5){
+            System.out.println("Too Many Request, canceling request");
+        }else{
+            forward(request);
+        }
+    }
+}
+public class DataValidationHandler extends BaseHandler {
+    @Override
+    public void handle(Request request) {
+        if(request.getPayload() != null){
+            System.out.println("Data Validation Successful");
+            forward(request);
+        }else{
+            System.out.println("Data validation failed");
+        }
+    }
+}
+public class BussinessLogicHandler extends BaseHandler {
+    @Override
+    public void handle(Request request) {
+        System.out.println("Reached Business Logic");
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        //Handlers
+        RequestHandler authHandler = new AuthHandler();
+        RequestHandler authzHandler = new Authzhandler();
+        RequestHandler rateLimitHandler = new RateLimitingHandler();
+        RequestHandler dataValidationHandler = new DataValidationHandler();
+        RequestHandler bussLogicHandler = new BussinessLogicHandler();
+
+        //Handlers chain building
+        authHandler.setNextHandler(authzHandler);
+        authzHandler.setNextHandler(rateLimitHandler);
+        rateLimitHandler.setNextHandler(dataValidationHandler);
+        dataValidationHandler.setNextHandler(bussLogicHandler);
+
+        Request request1 = new Request("pankaj","Admin",4,"knok knok");
+        //invoking first member of chain
+        authHandler.handle(request1);
+    }
+
+}
+```
 ## License
 
 Specify the license applicable to this project.
