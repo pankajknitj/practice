@@ -1,7 +1,7 @@
 package main.lld.behavioral.state.face;
 
 import main.lld.behavioral.state.model.Document;
-
+//State interface
 public interface DocumentState {
     void publish(Document document);
     void approve(Document document);

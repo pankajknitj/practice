@@ -6,6 +6,7 @@ import main.lld.behavioral.state.face.DocumentState;
 
 @Data
 @AllArgsConstructor
+//Context
 public class Document {
     private String content;
     private DocumentState state;

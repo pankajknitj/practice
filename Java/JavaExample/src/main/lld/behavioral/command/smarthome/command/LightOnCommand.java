@@ -7,6 +7,7 @@ import main.lld.behavioral.command.smarthome.receiver.Light;
 
 @Data
 @AllArgsConstructor
+//Concrete command-1
 public class LightOnCommand implements Command {
     private Light light;
     @Override

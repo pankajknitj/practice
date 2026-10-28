@@ -7,6 +7,7 @@ import main.lld.behavioral.state.model.Document;
 
 @Data
 @AllArgsConstructor
+//State-3
 public class Approved implements DocumentState {
     @Override
     public void publish(Document document) {
@@ -18,22 +19,22 @@ public class Approved implements DocumentState {
 
     @Override
     public void approve(Document document) {
-
+        System.out.println("Rejected: Already Approved");
     }
 
     @Override
     public void edit(Document document, String content) {
-
+        System.out.println("Rejected: Not allowed");
     }
 
     @Override
     public void review(Document document) {
-
+        System.out.println("Rejected:not allowed");
     }
 
     @Override
     public void reject(Document document) {
-
+        System.out.println("Rejected: Not allowed");
     }
 
     @Override

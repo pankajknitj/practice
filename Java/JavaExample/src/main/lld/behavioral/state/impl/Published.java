@@ -7,6 +7,7 @@ import main.lld.behavioral.state.model.Document;
 
 @Data
 @AllArgsConstructor
+//State-5
 public class Published implements DocumentState {
     @Override
     public void publish(Document document) {

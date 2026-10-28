@@ -8,6 +8,7 @@ import main.lld.behavioral.command.smarthome.receiver.Fan;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+//concrete command-3
 public class FanSpeedCommand implements Command {
     private int previousSpeed;
     private int newSpeed;

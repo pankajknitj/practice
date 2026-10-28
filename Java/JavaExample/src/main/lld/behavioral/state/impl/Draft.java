@@ -7,6 +7,7 @@ import main.lld.behavioral.state.model.Document;
 import java.sql.SQLOutput;
 
 @Data
+//Concrete state-1
 public class Draft implements DocumentState {
     //allowed
     @Override

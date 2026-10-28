@@ -7,6 +7,7 @@ import main.lld.behavioral.state.model.Document;
 
 @Data
 @AllArgsConstructor
+//State-2
 public class Review implements DocumentState {
 
     @Override

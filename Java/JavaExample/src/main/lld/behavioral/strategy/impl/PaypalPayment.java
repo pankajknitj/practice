@@ -4,6 +4,7 @@ import lombok.Data;
 import main.lld.behavioral.strategy.face.PaymentProcessor;
 
 @Data
+//concrete Strategy-2
 public class PaypalPayment implements PaymentProcessor {
     @Override
     public void processPayment(double amount) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import static main.lld.behavioral.iterator.model.NotificationType.EMAIL;
 import static main.lld.behavioral.iterator.model.NotificationType.SMS;
-
+// Concrete iterator class-3
 public class UnreadIterator implements Iterator<Notification> {
     private final NotificationCenter center;
     private int currentIndex = 0;

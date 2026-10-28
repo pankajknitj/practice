@@ -12,6 +12,7 @@ import static main.lld.behavioral.iterator.model.NotificationType.EMAIL;
 
 @Data
 @AllArgsConstructor
+// Concrete iterator class-1
 public class EmailIterator implements Iterator<Notification> {
     private final NotificationCenter center;
     private int currentIndex = 0;

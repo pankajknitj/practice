@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
+//observer-2
 public class PriceDisplay implements StockObserver {
     Map<String, Double> stockPrices = new HashMap<>();
 

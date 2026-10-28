@@ -6,10 +6,9 @@ import main.lld.behavioral.iterator.model.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// Concrete collection class
 public class NotificationCenter implements Iterable<Notification> {
     private List<Notification> notifications = new ArrayList<>();
-
 
     @Override
     public Iterator<Notification> emailIterator() {

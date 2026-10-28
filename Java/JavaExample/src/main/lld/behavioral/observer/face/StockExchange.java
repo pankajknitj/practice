@@ -4,6 +4,7 @@ import main.lld.behavioral.observer.model.StockEvent;
 
 import java.util.Map;
 
+//subject interface
 public interface StockExchange {
     void registerObserver(StockObserver observer);
     void removeObserver(StockObserver observer);

@@ -7,6 +7,7 @@ import main.lld.behavioral.strategy.model.CardDetails;
 
 @Data
 @AllArgsConstructor
+//Concrete Strategy-1
 public class CreditCardPayment implements PaymentProcessor {
     private CardDetails cardDetails;
     @Override

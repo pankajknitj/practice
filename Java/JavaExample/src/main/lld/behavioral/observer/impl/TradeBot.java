@@ -10,6 +10,7 @@ import java.util.Map;
 import static main.lld.behavioral.observer.model.EventType.STOCK_PRICE_UPDATE;
 
 @Data
+//observer-3
 public class TradeBot implements StockObserver {
     Map<String, Double> buyThreshold = new HashMap<>();
     Map<String, Double> sellThreshold = new HashMap<>();

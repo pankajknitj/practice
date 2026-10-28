@@ -10,6 +10,7 @@ import java.util.Map;
 import static main.lld.behavioral.observer.model.EventType.STOCK_PRICE_UPDATE;
 
 @Data
+//Observer-1
 public class AlertService implements StockObserver {
     private Map<String,Double> thresholdMap = new HashMap<>();
 
