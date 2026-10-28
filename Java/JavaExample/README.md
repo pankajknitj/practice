@@ -1,16 +1,12 @@
 # Design Patterns
 ## Table of Contents
 
-- [Strategy](#Strategy Design Pattern)
-- [Iterator](#Iterator Design Pattern)
-- [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
-- [Implementation Details](#implementation-details)
-- [Code Example](#code-example)
-- [Screenshots](#screenshots)
-- [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
-- [References](#references)
+- [Strategy](#Strategy-Design-Pattern)
+- [Iterator](#Iterator-Design-Pattern)
+- [Observer](#Observer-Design-Pattern)
+- [Command](#Command-Design-Pattern)
+- [State](#State-Design-Pattern)
+- [Template Method](#Template-Method-Design-Pattern)
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
