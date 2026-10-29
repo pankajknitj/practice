@@ -6,6 +6,7 @@ import main.lld.behavioral.visitor.model.Circle;
 import main.lld.behavioral.visitor.model.Rectangle;
 
 @Data
+//Operation on element (circle, Rectangle)
 public class AreaVisitor implements ShapeVisitor {
     @Override
     public void visitCircle(Circle circle) {

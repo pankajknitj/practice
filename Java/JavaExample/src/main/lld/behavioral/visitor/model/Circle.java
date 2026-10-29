@@ -7,6 +7,7 @@ import main.lld.behavioral.visitor.face.ShapeVisitor;
 
 @Data
 @AllArgsConstructor
+//Concrete Element
 public class Circle implements Shape {
     private double radius;
 

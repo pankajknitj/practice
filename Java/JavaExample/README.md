@@ -7,25 +7,48 @@
 - [Command](#Command-Design-Pattern)
 - [State](#State-Design-Pattern)
 - [Template Method](#Template-Method-Design-Pattern)
+- [Chain of Responsibility](#Chain-of-Responsibility-Design-Pattern)
+- [Visitor](#Visitor-Design-Pattern)
+- [Mediator](#Mediator-Design-Pattern)
+- [Memento](#Memento-Design-Pattern)
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
-- You have multiple ways to perform the same operation, and the choice might change at runtime
-- You want to avoid bloated conditional statements that select between different behaviors
-- You need to isolate algorithm-specific data and logic from the code that uses it
-- Different clients might need different algorithms for the same task
+- You have multiple ways to perform the same operation, and the choice might change at runtime.
+- You want to avoid bloated conditional statements that select between different behaviors.
+- You need to isolate algorithm-specific data and logic from the code that uses it.
+
 ```text
 The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. 
 Strategy lets the algorithm vary independently from clients that use it.
 ```
-Two characteristics define the pattern: Encapsulation of algorithms and Runtime interchangeability
-Explain the purpose of the project and the problem it solves.
+Two characteristics define the pattern:
+- Encapsulation of algorithms
+- Runtime interchangeability
+
 ![img_1.png](img_1.png)
 
-Practical Example: Payment Processing
-Let us work through a second example to reinforce the pattern. This time, we are building a payment processing system that supports multiple payment methods: credit card, PayPal, and cryptocurrency. Each method has a different processing flow, but the checkout service should not care which one is being used.
+**Practical Example:** Payment Processing
+
+we are building a payment processing system that supports multiple payment methods: credit card, PayPal, and cryptocurrency. Each method has a different processing flow, but the checkout service should not care which one is being used.
+
+**Naive Approach:** Checkout service contains all the payment logic and have switch cases to select which logic to invoke.
+
+Issues:
+- One class contains many unrelated payment methods.
+- new payment method requires changes in checkout service (open close violation)
+- bloated switch case/if-else
+
+**Efficient Approach:** Strategy Pattern
+
+- Defined options(ways) as concrete strategies.
+- Define Context (Processor), which holds strategy object.
+- At runtime change the strategy based on requirement by setter.
+
 
 ![img_2.png](img_2.png)
+<details>
+<summary>View Java Code</summary>
 
 ```java
 //Strategy Interface
@@ -101,23 +124,48 @@ public class Client {
     }
 }
 ```
+</details>
+
+[Home](#Table-of-Contents)
 ## Iterator Design Pattern
 It’s particularly useful in situations where:
 - You need to traverse a collection (like a list, tree, or graph) in a consistent and flexible way.
 - You want to support multiple ways to iterate (e.g., forward, backward, filtering, or skipping elements).
 - You want to decouple traversal logic from collection structure, so the client doesn't depend on the internal representation.
+- Parallel traversal
 ```text
 The Iterator Pattern defines a separate object, the iterator, that encapsulates the details of traversing a collection.
 Instead of exposing its internal structure, the collection provides an iterator that clients use to access elements sequentially.
 ```
-Two characteristics define the pattern: Separation of traversal from storage and Multiple independent traversals
+Two characteristics define the pattern: 
+- Separation of traversal from storage
+- Multiple independent traversals
 
 ![img_3.png](img_3.png)
 
 Practical Example: Notification System
-Let us work through a second example to reinforce the pattern in a different domain. We are building a notification system where a NotificationCenter stores notifications of different types: email, SMS, and push. We need iterators that can traverse all notifications, filter by type, and show only unread notifications.
+
+We are building a notification system where a NotificationCenter stores notifications of different types: email, SMS, and push. We need iterators that can traverse all notifications, filter by type, and show only unread notifications.
+
+**Naive Approach:**
+
+Return the underlined collection of notifications and let client traverse as per the requirement OR keep separate method for each iterator type and create based on condition.
+
+Issues:
+
+- if we return underlying collection, client is bound to that data structure, if we change client have to change the code.
+- we can't traverse parallel.
+
+**Efficient Approach:** Iterator pattern
+
+- It defined 2 separate concrete classes, iterator(FilteredIterator, UnreadIterator) and the collection(Inbox).
+- Defined a contract for collection to support creation of all type of iterators.
+- Iterator will have minimum hasNext() and next() method, it can have remove() and add().
 
 ![img_5.png](img_5.png)
+
+<details>
+<summary>View Java Code</summary>
 
 ```java
 public enum NotificationType {
@@ -292,9 +340,10 @@ public class Client {
         }
     }
 }
-
 ```
+</details>
 
+[Home](#Table-of-Contents)
 ## Observer Design Pattern
 ![img_6.png](img_6.png)
 
@@ -310,11 +359,19 @@ Two characteristics define the pattern: One-to-many notification and Loose coupl
 
 ![img_8.png](img_8.png)
 
+- This pattern says to create separate concrete listeners with a method update/receive.
+- Subject holds all the listeners who has subscribed to subject and on changing of state it notifies all the listeners.
+- Subject provides methods to register and unregister listeners.
+
 **Practical Example:** Stock Price Ticker
+
 Let us work through a second example to reinforce the pattern. This time, we are building a stock price notification system. A StockExchange subject publishes price updates for stocks.
 Multiple observers react to these updates: a PriceDisplay shows current prices, an AlertService notifies traders when prices cross thresholds, and a TradingBot executes trades based on price movements.
 
 ![img_10.png](img_10.png)
+
+<details>
+<summary>View Java Code</summary>
 
 ```java
 public enum EventType {
@@ -485,6 +542,9 @@ public class Client {
     }
 }
 ```
+</details>
+
+[Home](#Table-of-Contents)
 ## Command Design Pattern
 ![img_11.png](img_11.png)
 
@@ -497,7 +557,9 @@ It’s particularly useful in situations where:
 The Command pattern is a behavioral design pattern that turns a request into a standalone object containing all the information needed to perform that request. 
 This lets you parameterize methods with different requests, delay or queue a request's execution, and support undoable operations.
 ```
-Two characteristics define the pattern: Encapsulation of requests as objects and Decoupling of invoker and receiver.
+**Two characteristics define the pattern:** 
+- Encapsulation of requests as objects
+- Decoupling of invoker and receiver.
 ```text
 Real-World Analogy
 Think about ordering at a restaurant. You tell the waiter what you want (your request), and the waiter writes it on an order slip. 
@@ -508,7 +570,31 @@ If you want to cancel, the waiter pulls the slip from the queue, the same slip t
 ```
 ![img_13.png](img_13.png)
 
+**The Problem: The Tightly Coupled Smart Home Controller**
+
+Imagine you are building a smart home hub. The hub needs to control various devices: lights, thermostats, and more. You need a controller that can send commands to these devices.
+
+**Naive Approach:**
+Controller holds references of all the equipment (light, fan) and have methods for each operation (lightOn(), lightOff()) which directly interact with equiepment
+
+Issues:
+
+- Tight Coupling: controller is tightly coupled to each devices and their methods.
+- Addition of any new device requires changes in controller (open close violation).
+- No undo/redo support.
+- No scheduling or queuing.
+
+**Efficient Approach:** Command Pattern
+
+- Define Receivers (Light, Fan), these are the entities which actually perform the actions.
+- Define concretes commands (based on contract to have execute() and undo() operation), each command class holds the receiver object.
+- Define Invoker(Remote), which is unaware of command operations(internals), it just invoke the execute/undo methods of command.
+- At runtime set the command and call execute/undoLast method to perform the operation.
+
 ![img_14.png](img_14.png)
+
+<details>
+<summary>View Java Code</summary>
 
 ```java
 //Receiver-1
@@ -647,7 +733,9 @@ public class Client {
     }
 }
 ```
+</details>
 
+[Home](#Table-of-Contents)
 ## State Design Pattern
 It’s particularly useful in situations where:
 - An object can be in one of many distinct states, each with different behavior.
@@ -657,15 +745,39 @@ It’s particularly useful in situations where:
 The State pattern allows an object (the Context) to alter its behavior when its internal state changes. 
 The object appears to change its class because its behavior is now delegated to a different state object.
 ```
-Two characteristics define the pattern: Encapsulation of state-specific behavior and State-driven transitions
+**Two characteristics define the pattern:**
+- Encapsulation of state-specific behavior
+- State-driven transitions
 
 ![img_18.png](img_18.png)
 
 **Practical Example:** Document Workflow
-Let us work through a second example to reinforce the pattern. This time, we are building a document management system where documents move through a workflow: Draft, Under Review, and Published. Each state has different rules for what operations are allowed.
+
+We are building a document management system where documents move through a workflow: Draft, Under Review, Approved and Published. Each state has different rules for what operations are allowed.
 In Draft state, authors can edit the document and submit it for review. In Review state, reviewers can approve or reject it. In Published state, the document is read-only and can only be unpublished to go back to Draft.
 
+**Naive Approach:**
+We can have a class (Document) and for each operation have a method consists of switch statement based on state to perform the operation
+i.e: edit(state) if state is draft then only allow editing else reject.
+
+Issues:
+
+- Violates Single responsibility principle as single class holds all the logic for all the states.
+- cluttered if-else/switch statements.
+- Hard to extend: addition of a new state requires modification in all the operation's method as written with switch case.
+
+**Efficient Approach:** state design pattern
+
+- Define concrete state with contract to have methods for possible operation on context(document), context is parameterized.
+- Define Context(Document) which holds the one of concrete state at a time and methods for all operations and delegates the actions to state object.
+- All the operations on context will be performed by state object if allowed or reject.
+- this is how we implement the logic based on the state of context.
+
 ![img_19.png](img_19.png)
+
+<details>
+<summary>View Java Code</summary>
+
 ```java
 //Context
 public class Document {
@@ -906,7 +1018,9 @@ public class Client {
     }
 }
 ```
+</details>
 
+[Home](#Table-of-Contents)
 ## Template Method Design Pattern
 ![img_20.png](img_20.png)
 
@@ -916,6 +1030,7 @@ It’s particularly useful in situations where:
 - You want to allow subclasses to customize specific steps without rewriting the whole algorithm.
 
 **The Problem:** Exporting Reports
+
 Let’s say you’re building an analytics platform that lets users export reports in different formats. Right now, the product needs CSV and PDF support, with Excel coming soon.
 Each exporter follows the same high-level workflow:
 
@@ -928,16 +1043,38 @@ The Template Method pattern defines the skeleton of an algorithm in a method, de
 It allows you to keep the overall structure of the process consistent, while giving subclasses the flexibility to 
 customize specific parts of the algorithm.
 ```
-**Two characteristics define the pattern:** Algorithm skeleton in the base class and Subclasses override specific steps.
+**Two characteristics define the pattern:**
+- Algorithm skeleton in the base class
+- Subclasses override specific steps.
 
 ![img_22.png](img_22.png)
 
 **Practical Example:** Online Order Processing
+
 Let us work through a second example to reinforce the pattern. This time, we are building an order processing pipeline for an e-commerce platform. Every order goes through the same sequence of steps: validate the order, calculate the total, process the payment, and send a confirmation.
 
 But the details differ based on the order type: standard orders, Prime orders (free shipping, priority processing), and international orders (customs handling, currency conversion).
 
+**Naive Approach:**
+We can have a class OrderProcessor having method for each order type which execute all the logics like validation, calculation, payment, confirmation.
+
+Issues:
+
+- Single class handling all types or orders (violating single responsibility principle)
+- Dev can add extra step to any particular order type, this will make system to behave different in each order types.
+- new order type requires modification in OrderProcessor.
+
+**Efficient Approach:** Template Method.
+
+- Define a abstract class(OrderProcessor) with template method which holds the sequence of method calls.
+- It left the method as abstract which dependent on the concrete implementation.
+- It defined few methods with empty body, these are Hooks and optional for concretes.
+- Define concrete classes(standardOrderProcessor, PrimeOrderProcessor) and override specific behavior.
+
 ![img_23.png](img_23.png)
+
+<details>
+<summary>View Java Code</summary>
 
 ```java
 //Here we will define the template method
@@ -1055,8 +1192,10 @@ public class Client {
 }
 
 ```
+</details>
 
-## Chain of Responsibility Design Patern
+[Home](#Table-of-Contents)
+## Chain of Responsibility Design Pattern
 This pattern is useful when:
 - A request must be handled by one of many possible handlers, and you don’t want the sender to be tightly coupled to any specific one.
 - You want to decouple request logic from the code that processes it.
@@ -1077,6 +1216,22 @@ handler in the chain can either:
 **The Problem:** Handling HTTP Requests
 
 ![img_26.png](img_26.png)
+
+Naive Approach: We can have a class RequestHandler having all the logics under a if conditions, if fails return else pass.
+
+Issues:
+
+- Single class holds all the unrelated task operation (violated SRP).
+- Adding any new logic required modification in the RequestHandler.
+
+**Efficient Approach:** Chain of Responsibility Pattern, where each handler know about the next handler in the chain.
+
+- Define a Interface(Contract) with method setNextHandler(Handler) and handle(Request).
+- Define a base handler as abstract class with a fieled to hold handler and forward request to next handler, as these are common operations for all handlers.
+- Define Concrete handlers, and link them in client to form a chain, each handler do it task and pass to next if required else terminate.
+
+<details>
+<summary>View Java Code</summary>
 
 ```java
 public class Request {
@@ -1185,6 +1340,390 @@ public class Client {
 
 }
 ```
-## License
+</details>
 
-Specify the license applicable to this project.
+[Home](#Table-of-Contents)
+## Visitor Design Pattern
+It’s particularly useful in situations where:
+- You have a complex object structure (like ASTs, documents, or UI elements) that you want to perform multiple unrelated operations on.
+- You want to add new behaviors to classes without changing their source code.
+- You need to perform different actions depending on an object’s concrete type, without resorting to a long chain of if-else or instanceof checks.
+```text
+The Visitor Design Pattern lets you separate algorithms from the objects on which they operate. 
+It enables you to add new operations to a class hierarchy without modifying the classes themselves.
+
+if we add another concrete class (element) then we have to modify all the operation clas, this is a trade off.
+```
+Two characteristics define the pattern:
+- Separation of algorithm and structure.
+- **Double dispatch:** The correct method to call is determined by both the type of the element and the type of the visitor. The element calls back the visitor with **this**, which resolves the element's concrete type at compile time. This two-step dispatch is what makes the pattern work without instanceof checks
+  
+**Real-World Analogy**: 
+Think about a home inspection. You have a house with different components: plumbing, electrical wiring, structural framing, and HVAC. Each specialist (a plumber, an electrician, a structural engineer, an HVAC technician) "visits" the house and inspects only what they understand.
+
+The house does not need to know how to evaluate its own plumbing or wiring. It just opens the door and lets each inspector do their job. Adding a new type of inspection (say, a fire safety audit) does not require remodeling the house. You just bring in a new inspector.
+
+The Visitor pattern works the same way: the elements (house components) accept visitors (inspectors), and new operations are new visitors.
+![img_27.png](img_27.png)
+
+**The Problem:** Adding Operations to a Shape Hierarchy, operations are rendering on screen, calculate area, export to SVG and json
+it is expected to add new operations/feature to the existing object.
+**Naive Approach:** Have a class Shape (Element) consist of method for each operation.
+
+Issues:
+
+- Single class handling unrelated operation like rendering and exporting.
+- As new addition of new operation are frequent we have to modify the class frequently (open close violation).
+- Hard to extend.
+
+**Efficient Approach:** Visitor design pattern.
+
+- Define a contract (Visitor) with containing methods (visitCircle(), visitRectangle()) for each concrete Element(circle, rectangle).
+- Create concrete visitors for each operation required (calculation, display) and override each method to support this operation for all elements.
+- Here Element is parameterized and calls the visit(this) of visitor (double dispatch).
+
+![img_28.png](img_28.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+//Element
+public interface Shape {
+    void accept(ShapeVisitor visitor);
+}
+//Concrete Element
+public class Circle implements Shape {
+    private double radius;
+
+    @Override
+    public void accept(ShapeVisitor visitor) {
+        visitor.visitCircle(this);
+    }
+}
+public class Rectangle implements Shape {
+    private double length;
+    private double width;
+
+    @Override
+    public void accept(ShapeVisitor visitor) {
+        visitor.visitRectangle(this);
+    }
+}
+```
+```java
+//Visitor contract
+public interface ShapeVisitor {
+    void visitCircle(Circle circle);
+    void visitRectangle(Rectangle rectangle);
+}
+//Operation on element (circle, Rectangle)
+//if we add another shape then we have to modify all the operation classes
+public class AreaVisitor implements ShapeVisitor {
+    @Override
+    public void visitCircle(Circle circle) {
+        double radius = circle.getRadius();
+        double area = Math.PI * radius * radius;
+        System.out.println("Area of Circle: " + area);
+    }
+
+    @Override
+    public void visitRectangle(Rectangle rectangle) {
+        double length = rectangle.getLength();
+        double width = rectangle.getWidth();
+        double area = length * width;
+        System.out.println("Area of Rectangle: " + area);
+    }
+}
+
+public class DisplayVisitor implements ShapeVisitor {
+    @Override
+    public void visitCircle(Circle circle) {
+        System.out.println("Displaying Circle with radius: " + circle.getRadius());
+    }
+
+    @Override
+    public void visitRectangle(Rectangle rectangle) {
+        System.out.println("Displaying Rectangle with length: " + rectangle.getLength() + " and width: " + rectangle.getWidth());
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+
+        Shape c1 = new Circle(4.55);
+        Shape c2 = new Circle(5.55);
+        Shape r1 = new Rectangle(23,233.2);
+        Shape r2 = new Rectangle(23,233.2);
+
+        List<Shape> shapes = new ArrayList<>(List.of(c1, c2, r1, r2));
+
+        shapes.forEach(shape -> shape.accept(new AreaVisitor()));
+
+        shapes.forEach(shape -> shape.accept(new DisplayVisitor()));
+
+    }
+}
+```
+</details>
+
+[Home](#Table-of-Contents)
+## Mediator Design Pattern
+![img_29.png](img_29.png)
+```text
+The Mediator Pattern promotes loose coupling by centralizing communication between objects. 
+Instead of having components refer to and interact with each other directly, they communicate through a mediator.
+```
+It’s particularly useful in situations where:
+- You have a group of tightly coupled classes or UI components that need to communicate.
+- Changes in one component require updates in multiple others.
+- You want to centralize communication logic to simplify maintenance and testing.
+
+Two characteristics of the pattern:
+- Centralized communication. All interaction logic lives in one place: the mediator. Components do not call methods on each other. When a component's state changes, it notifies the mediator, and the mediator coordinates the response. This means the complex web of many-to-many relationships gets replaced by a simple star topology with the mediator at the center.
+- Loose coupling between components.
+
+![img_30.png](img_30.png)
+  
+**The Problem:** Tightly Coupled UI Components
+
+Imagine you're building a login form with the following UI components:
+- A username field
+- A password field
+- A login button
+- A status label
+
+The logic of the form is simple:
+The login button should be enabled only when both username and password fields are non-empty.
+When the button is clicked, it should attempt login and display the result in the status label.
+
+**Naive Approach:**
+One Implementation could be button is holding references of each text field and label and each text fields holding 
+reference of button, when any field gets changes, field triggers a validation method of button to each if it can get enabled.
+Issues:
+- Onboarding of new component(text field) requires changes in button and all the component which communincates to this
+- Tight coupling
+
+Efficient Approach: Mediator design pattern
+
+- Define a contract (Mediator) with a single method to be called by component when changes occur, it holds all the unrelated concrete components.
+- Define a Abstract class Component which holds the reference of mediator and a mehtod to notify mediator by passing self reference.
+- Mediator act on each change received and change the state of other components, in this way component doesn't have to communicate directly.
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+//Component contract
+public abstract class UIComponent {
+    private UIMediator mediator;
+    //after performing the operation concrete component notifies the mediator
+    protected void notifyMediator(){
+        mediator.componentChange(this);
+    }
+}
+
+//concrete component
+public class TextField extends UIComponent {
+    private String text;
+    public TextField(UIMediator mediator) {
+        super(mediator);
+    }
+
+    public void setText(String text){
+        this.text = text;
+        notifyMediator();
+    }
+    public String getText(){ return text;}
+}
+
+public class Button extends UIComponent {
+    private boolean enabled = false;
+    public Button(UIMediator mediator) {
+        super(mediator);
+    }
+    public void setEnabled(boolean flag){
+        enabled = flag;
+        notifyMediator();
+    }
+    public void click(){
+        if(enabled){
+            System.out.println("Login Successful");
+        }else{
+            System.out.println("Login Failed");
+        }
+        //required to set status of login
+        notifyMediator();
+    }
+    public boolean getEnabled(){return enabled;}
+}
+
+public class Label extends UIComponent {
+    private String label;
+    public Label(UIMediator mediator) {
+        super(mediator);
+    }
+    public void setLabel(String label){
+        this.label = label;
+        notifyMediator();
+    }
+    public String getLabel(){return label;}
+}
+```
+```java
+//Mediator contract
+public interface UIMediator {
+    void componentChange(UIComponent component);
+}
+
+//Concrete implementation of mediator
+public class FormMediator implements UIMediator {
+    private TextField username;
+    private TextField password;
+    private Label label;
+    private Button button;
+
+    //For mediator it is expected to know the type of component to perform action
+    @Override
+    public void componentChange(UIComponent component) {
+        if(component == username || component ==password){
+            boolean enabled = !StringUtils.isEmpty(username.getText()) && !StringUtils.isEmpty(password.getText());
+            button.setEnabled(enabled);
+        }else if(component == button){
+            if(button.getEnabled()) label.setLabel("Logged In");
+            else label.setLabel("Failed Login");
+        }
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        FormMediator form = new FormMediator();
+
+        TextField username = new TextField(form);
+        TextField pass = new TextField(form);
+        Label label = new Label(form);
+        Button button = new Button(form);
+
+        form.setButton(button);
+        form.setPassword(pass);
+        form.setUsername(username);
+        form.setLabel(label);
+
+        username.setText("pankaj");
+        button.click(); //failed
+        pass.setText("122323");
+        button.click(); //success
+    }
+}
+```
+</details>
+
+[Home](#Table-of-Contents)
+## Memento Design pattern
+
+```text
+The Memento Design Pattern is a behavioral design pattern that lets you capture and store an object’s internal state so it can be restored later, without violating encapsulation.
+```
+![img_31.png](img_31.png)
+
+It’s particularly useful in situations where:
+- You need to implement undo/redo functionality.
+- You want to support checkpointing or versioning of an object’s state.
+- You want to separate the concerns of state storage from state management logic.
+
+**The Problem: Implementing Undo in a Text Editor**
+
+Imagine you’re building a simple text editor. The editor supports basic operations like:type(String text), getContent(), undo(String txt)
+
+**Naive Approach:** Client manages the snapshot and whenever required it will call the undo method with snapshot.
+
+Issues:
+
+- Editor exposing the internal state to client directly (Broke Encapsulation).
+- Each change in the internal state of editor requires changes in the client to manage the snapshot (adding cursor position).
+
+**Efficient Approach:** Use Memento Pattern.
+
+- Define a Memento class which holds the internals of the originator(document) as a black box.
+- Define CareTaker (mementoManager) to store and apply the snapshot on originator (document).
+- Define Originator with internal states to hold the state, and 2 methods to create snapshot and apply snapshot.
+- client interact with manager(caretaker) to take and restore snapshot.
+
+![img_32.png](img_32.png)
+
+![img_33.png](img_33.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+public class TextEditorMemento {
+    private final String state;
+    private final int cursorPosition;
+}
+
+public class TextEditorUndoManager {
+    Stack<TextEditorMemento> history = new Stack<>();
+
+    public void save(TextEditor textEditor){
+        history.push(textEditor.save());
+    }
+    public void restore(TextEditor textEditor){
+        if(!history.isEmpty())
+            textEditor.undo(history.pop());
+        else System.out.println("Not have any saved state");
+    }
+}
+
+public class TextEditor {
+    private String txt = "";
+    private int cursorPosition = 0;
+
+    public void type(String txt){
+        System.out.println("Typed: " + txt);
+        this.txt += txt;
+        cursorPosition += txt.length();
+    }
+    public TextEditorMemento save(){
+        System.out.println("Taking Snapshot...");
+        return new TextEditorMemento(txt,cursorPosition);
+    }
+    public void undo(TextEditorMemento memento){
+        System.out.println("Restoring the Snapshot");
+        txt = memento.getState();
+        cursorPosition = memento.getCursorPosition();
+    }
+    public void print(){
+        System.out.println("Content: " + txt + ", Cursor Position: " + cursorPosition);
+    }
+}
+```
+
+```java
+public class Client {
+    public static void main(String[] args) {
+        TextEditor editor = new TextEditor();
+        TextEditorUndoManager undoManager = new TextEditorUndoManager();
+
+        editor.type("Hello");
+        editor.type(" World");
+
+        undoManager.save(editor);
+
+        editor.type("!");
+
+        editor.print();
+
+        undoManager.restore(editor);
+        editor.print();
+
+    }
+}
+```
+</details>
+
+
+#### Prepared by Pankaj
