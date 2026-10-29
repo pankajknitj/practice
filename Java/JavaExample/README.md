@@ -26,7 +26,7 @@ Two characteristics define the pattern:
 - Encapsulation of algorithms
 - Runtime interchangeability
 
-![img_1.png](img_1.png)
+![img_1.png](resources/img_1.png)
 
 **Practical Example:** Payment Processing
 
@@ -46,7 +46,7 @@ Issues:
 - At runtime change the strategy based on requirement by setter.
 
 
-![img_2.png](img_2.png)
+![img_2.png](resources/img_2.png)
 <details>
 <summary>View Java Code</summary>
 
@@ -137,11 +137,11 @@ It’s particularly useful in situations where:
 The Iterator Pattern defines a separate object, the iterator, that encapsulates the details of traversing a collection.
 Instead of exposing its internal structure, the collection provides an iterator that clients use to access elements sequentially.
 ```
-Two characteristics define the pattern: 
+Two characteristics define the pattern:
 - Separation of traversal from storage
 - Multiple independent traversals
 
-![img_3.png](img_3.png)
+![img_3.png](resources/img_3.png)
 
 Practical Example: Notification System
 
@@ -149,7 +149,7 @@ We are building a notification system where a NotificationCenter stores notifica
 
 **Naive Approach:**
 
-Return the underlined collection of notifications and let client traverse as per the requirement OR keep separate method for each iterator type and create based on condition.
+Return the underlying collection of notifications and let client traverse as per the requirement OR keep separate method for each iterator type and create based on condition.
 
 Issues:
 
@@ -162,7 +162,7 @@ Issues:
 - Defined a contract for collection to support creation of all type of iterators.
 - Iterator will have minimum hasNext() and next() method, it can have remove() and add().
 
-![img_5.png](img_5.png)
+![img_5.png](resources/img_5.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -345,7 +345,7 @@ public class Client {
 
 [Home](#Table-of-Contents)
 ## Observer Design Pattern
-![img_6.png](img_6.png)
+![img_6.png](resources/img_6.png)
 
 This pattern shines in scenarios where:
 - You have multiple parts of the system that need to react to a change in one central component.
@@ -357,7 +357,7 @@ changes from one central object (the Subject) to many dependent objects (the Obs
 ```
 Two characteristics define the pattern: One-to-many notification and Loose coupling between subject and observers
 
-![img_8.png](img_8.png)
+![img_8.png](resources/img_8.png)
 
 - This pattern says to create separate concrete listeners with a method update/receive.
 - Subject holds all the listeners who has subscribed to subject and on changing of state it notifies all the listeners.
@@ -368,7 +368,7 @@ Two characteristics define the pattern: One-to-many notification and Loose coupl
 Let us work through a second example to reinforce the pattern. This time, we are building a stock price notification system. A StockExchange subject publishes price updates for stocks.
 Multiple observers react to these updates: a PriceDisplay shows current prices, an AlertService notifies traders when prices cross thresholds, and a TradingBot executes trades based on price movements.
 
-![img_10.png](img_10.png)
+![img_10.png](resources/img_10.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -546,7 +546,7 @@ public class Client {
 
 [Home](#Table-of-Contents)
 ## Command Design Pattern
-![img_11.png](img_11.png)
+![img_11.png](resources/img_11.png)
 
 It’s particularly useful in situations where:
 - You want to encapsulate operations as objects.
@@ -557,7 +557,7 @@ It’s particularly useful in situations where:
 The Command pattern is a behavioral design pattern that turns a request into a standalone object containing all the information needed to perform that request. 
 This lets you parameterize methods with different requests, delay or queue a request's execution, and support undoable operations.
 ```
-**Two characteristics define the pattern:** 
+**Two characteristics define the pattern:**
 - Encapsulation of requests as objects
 - Decoupling of invoker and receiver.
 ```text
@@ -568,14 +568,14 @@ The order slip is the command object. The waiter is the invoker, carrying and de
 The customer is the client, creating the request.The waiter does not need to know how to cook, and the chef does not need to know who ordered. The slip decouples them completely.
 If you want to cancel, the waiter pulls the slip from the queue, the same slip that started the process can undo it.
 ```
-![img_13.png](img_13.png)
+![img_13.png](resources/img_13.png)
 
 **The Problem: The Tightly Coupled Smart Home Controller**
 
 Imagine you are building a smart home hub. The hub needs to control various devices: lights, thermostats, and more. You need a controller that can send commands to these devices.
 
 **Naive Approach:**
-Controller holds references of all the equipment (light, fan) and have methods for each operation (lightOn(), lightOff()) which directly interact with equiepment
+Controller holds references of all the equipment (light, fan) and have methods for each operation (lightOn(), lightOff()) which directly interact with equipment.
 
 Issues:
 
@@ -587,11 +587,11 @@ Issues:
 **Efficient Approach:** Command Pattern
 
 - Define Receivers (Light, Fan), these are the entities which actually perform the actions.
-- Define concretes commands (based on contract to have execute() and undo() operation), each command class holds the receiver object.
+- Define concrete commands (based on contract to have execute() and undo() operation), each command class holds the receiver object.
 - Define Invoker(Remote), which is unaware of command operations(internals), it just invoke the execute/undo methods of command.
 - At runtime set the command and call execute/undoLast method to perform the operation.
 
-![img_14.png](img_14.png)
+![img_14.png](resources/img_14.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -749,7 +749,7 @@ The object appears to change its class because its behavior is now delegated to 
 - Encapsulation of state-specific behavior
 - State-driven transitions
 
-![img_18.png](img_18.png)
+![img_18.png](resources/img_18.png)
 
 **Practical Example:** Document Workflow
 
@@ -773,7 +773,7 @@ Issues:
 - All the operations on context will be performed by state object if allowed or reject.
 - this is how we implement the logic based on the state of context.
 
-![img_19.png](img_19.png)
+![img_19.png](resources/img_19.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -1022,7 +1022,7 @@ public class Client {
 
 [Home](#Table-of-Contents)
 ## Template Method Design Pattern
-![img_20.png](img_20.png)
+![img_20.png](resources/img_20.png)
 
 It’s particularly useful in situations where:
 - You have a well-defined sequence of steps to perform a task.
@@ -1034,7 +1034,7 @@ It’s particularly useful in situations where:
 Let’s say you’re building an analytics platform that lets users export reports in different formats. Right now, the product needs CSV and PDF support, with Excel coming soon.
 Each exporter follows the same high-level workflow:
 
-Prepare Data ->  Open File -> Write Header -> Write Data Rows -> Write Footer -> Close File.
+Prepare Data -> Open File -> Write Header -> Write Data Rows -> Write Footer -> Close File.
 
 The workflow is the same across formats. Only the **header writing and data row formatting** differ. But if you implement each exporter independently, you end up duplicating the shared logic in every class.
 
@@ -1047,7 +1047,7 @@ customize specific parts of the algorithm.
 - Algorithm skeleton in the base class
 - Subclasses override specific steps.
 
-![img_22.png](img_22.png)
+![img_22.png](resources/img_22.png)
 
 **Practical Example:** Online Order Processing
 
@@ -1066,12 +1066,12 @@ Issues:
 
 **Efficient Approach:** Template Method.
 
-- Define a abstract class(OrderProcessor) with template method which holds the sequence of method calls.
-- It left the method as abstract which dependent on the concrete implementation.
+- Define an abstract class(OrderProcessor) with template method which holds the sequence of method calls.
+- It leaves the method as abstract which is dependent on the concrete implementation.
 - It defined few methods with empty body, these are Hooks and optional for concretes.
 - Define concrete classes(standardOrderProcessor, PrimeOrderProcessor) and override specific behavior.
 
-![img_23.png](img_23.png)
+![img_23.png](resources/img_23.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -1209,13 +1209,13 @@ handler in the chain can either:
 - **Pass** it to the next handler in the chain
 - **Handle** the request and then pass it along
 
-![img_24.png](img_24.png)
+![img_24.png](resources/img_24.png)
 
-![img_25.png](img_25.png)
+![img_25.png](resources/img_25.png)
 
 **The Problem:** Handling HTTP Requests
 
-![img_26.png](img_26.png)
+![img_26.png](resources/img_26.png)
 
 Naive Approach: We can have a class RequestHandler having all the logics under a if conditions, if fails return else pass.
 
@@ -1227,7 +1227,7 @@ Issues:
 **Efficient Approach:** Chain of Responsibility Pattern, where each handler know about the next handler in the chain.
 
 - Define a Interface(Contract) with method setNextHandler(Handler) and handle(Request).
-- Define a base handler as abstract class with a fieled to hold handler and forward request to next handler, as these are common operations for all handlers.
+- Define a base handler as abstract class with a field to hold handler and forward request to next handler, as these are common operations for all handlers.
 - Define Concrete handlers, and link them in client to form a chain, each handler do it task and pass to next if required else terminate.
 
 <details>
@@ -1352,22 +1352,22 @@ It’s particularly useful in situations where:
 The Visitor Design Pattern lets you separate algorithms from the objects on which they operate. 
 It enables you to add new operations to a class hierarchy without modifying the classes themselves.
 
-if we add another concrete class (element) then we have to modify all the operation clas, this is a trade off.
+if we add another concrete class (element) then we have to modify all the operation classes, this is a trade off.
 ```
 Two characteristics define the pattern:
 - Separation of algorithm and structure.
-- **Double dispatch:** The correct method to call is determined by both the type of the element and the type of the visitor. The element calls back the visitor with **this**, which resolves the element's concrete type at compile time. This two-step dispatch is what makes the pattern work without instanceof checks
-  
-**Real-World Analogy**: 
-Think about a home inspection. You have a house with different components: plumbing, electrical wiring, structural framing, and HVAC. Each specialist (a plumber, an electrician, a structural engineer, an HVAC technician) "visits" the house and inspects only what they understand.
+- **Double dispatch:** The correct method to call is determined by both the type of the element and the type of the visitor. The element calls back the visitor with **this**, which resolves the element's concrete type at runtime.
+
+**Real-World Analogy**:
+Think about a home inspection. You have a house with different components: plumbing, electrical wiring, structural framing, and HVAC. Each specialist (a plumber, an electrician, a structural engineer, and an HVAC technician) "visits" the house and inspects only what they understand.
 
 The house does not need to know how to evaluate its own plumbing or wiring. It just opens the door and lets each inspector do their job. Adding a new type of inspection (say, a fire safety audit) does not require remodeling the house. You just bring in a new inspector.
 
 The Visitor pattern works the same way: the elements (house components) accept visitors (inspectors), and new operations are new visitors.
-![img_27.png](img_27.png)
+![img_27.png](resources/img_27.png)
 
-**The Problem:** Adding Operations to a Shape Hierarchy, operations are rendering on screen, calculate area, export to SVG and json
-it is expected to add new operations/feature to the existing object.
+**The Problem:** Adding Operations to a Shape Hierarchy, operations are rendering on screen, calculate area, export to SVG and JSON.
+It is expected to add new operations/features to the existing object.
 **Naive Approach:** Have a class Shape (Element) consist of method for each operation.
 
 Issues:
@@ -1382,7 +1382,7 @@ Issues:
 - Create concrete visitors for each operation required (calculation, display) and override each method to support this operation for all elements.
 - Here Element is parameterized and calls the visit(this) of visitor (double dispatch).
 
-![img_28.png](img_28.png)
+![img_28.png](resources/img_28.png)
 
 <details>
 <summary>View Java Code</summary>
@@ -1470,7 +1470,7 @@ public class Client {
 
 [Home](#Table-of-Contents)
 ## Mediator Design Pattern
-![img_29.png](img_29.png)
+![img_29.png](resources/img_29.png)
 ```text
 The Mediator Pattern promotes loose coupling by centralizing communication between objects. 
 Instead of having components refer to and interact with each other directly, they communicate through a mediator.
@@ -1481,11 +1481,11 @@ It’s particularly useful in situations where:
 - You want to centralize communication logic to simplify maintenance and testing.
 
 Two characteristics of the pattern:
-- Centralized communication. All interaction logic lives in one place: the mediator. Components do not call methods on each other. When a component's state changes, it notifies the mediator, and the mediator coordinates the response. This means the complex web of many-to-many relationships gets replaced by a simple star topology with the mediator at the center.
+- Centralized communication. All interaction logic lives in one place: the mediator. Components do not call methods on each other. When a component's state changes, it notifies the mediator, and the mediator coordinates the response.
 - Loose coupling between components.
 
-![img_30.png](img_30.png)
-  
+![img_30.png](resources/img_30.png)
+
 **The Problem:** Tightly Coupled UI Components
 
 Imagine you're building a login form with the following UI components:
@@ -1499,17 +1499,17 @@ The login button should be enabled only when both username and password fields a
 When the button is clicked, it should attempt login and display the result in the status label.
 
 **Naive Approach:**
-One Implementation could be button is holding references of each text field and label and each text fields holding 
-reference of button, when any field gets changes, field triggers a validation method of button to each if it can get enabled.
-Issues:
-- Onboarding of new component(text field) requires changes in button and all the component which communincates to this
-- Tight coupling
+One implementation could be button is holding references of each text field and label and each text fields holding reference of button, when any field gets changes, field triggers a validation method of button to each if it can get enabled.
 
-Efficient Approach: Mediator design pattern
+Issues:
+- Onboarding of new component (text field) requires changes in button and all the component which communicates to this.
+- Tight coupling.
+
+**Efficient Approach:** Mediator design pattern
 
 - Define a contract (Mediator) with a single method to be called by component when changes occur, it holds all the unrelated concrete components.
-- Define a Abstract class Component which holds the reference of mediator and a mehtod to notify mediator by passing self reference.
-- Mediator act on each change received and change the state of other components, in this way component doesn't have to communicate directly.
+- Define an Abstract class Component which holds the reference of mediator and a method to notify mediator by passing self reference.
+- Mediator acts on each change received and change the state of other components, in this way component doesn't have to communicate directly.
 
 <details>
 <summary>View Java Code</summary>
@@ -1627,7 +1627,7 @@ public class Client {
 ```text
 The Memento Design Pattern is a behavioral design pattern that lets you capture and store an object’s internal state so it can be restored later, without violating encapsulation.
 ```
-![img_31.png](img_31.png)
+![img_31.png](resources/img_31.png)
 
 It’s particularly useful in situations where:
 - You need to implement undo/redo functionality.
@@ -1636,7 +1636,7 @@ It’s particularly useful in situations where:
 
 **The Problem: Implementing Undo in a Text Editor**
 
-Imagine you’re building a simple text editor. The editor supports basic operations like:type(String text), getContent(), undo(String txt)
+Imagine you’re building a simple text editor. The editor supports basic operations like: type(String text), getContent(), undo(String txt)
 
 **Naive Approach:** Client manages the snapshot and whenever required it will call the undo method with snapshot.
 
@@ -1648,13 +1648,13 @@ Issues:
 **Efficient Approach:** Use Memento Pattern.
 
 - Define a Memento class which holds the internals of the originator(document) as a black box.
-- Define CareTaker (mementoManager) to store and apply the snapshot on originator (document).
+- Define Caretaker (mementoManager) to store and apply the snapshot on originator (document).
 - Define Originator with internal states to hold the state, and 2 methods to create snapshot and apply snapshot.
 - client interact with manager(caretaker) to take and restore snapshot.
 
-![img_32.png](img_32.png)
+![img_32.png](resources/img_32.png)
 
-![img_33.png](img_33.png)
+![img_33.png](resources/img_33.png)
 
 <details>
 <summary>View Java Code</summary>
