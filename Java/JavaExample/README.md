@@ -1,6 +1,7 @@
 # Design Patterns
 ## Table of Contents
-
+- [Design Principles](#Design-Principles)
+- [Singleton](#Singleton-Design-Pattern)
 - [Strategy](#Strategy-Design-Pattern)
 - [Iterator](#Iterator-Design-Pattern)
 - [Observer](#Observer-Design-Pattern)
@@ -11,6 +12,122 @@
 - [Visitor](#Visitor-Design-Pattern)
 - [Mediator](#Mediator-Design-Pattern)
 - [Memento](#Memento-Design-Pattern)
+
+## Design Principles
+
+**DRY:** Don't repeat youself, if any logic getting repeated more than 3 time, move that to shared utils.
+
+**KISS:** Keep it simple stupid (no Unnecessary abstractions, extra layers, and clever tricks). logic hard to understand -> more bugs introduced -> workarounds patched -> even more complex system.
+ways to apply KISS
+- Write Code for Humans, Not Machines
+- Avoid Premature Abstraction: create abstraction only when if have multiple implementations.
+- Favor Composition Over Inheritance: In multilevel inheritance it becomes hard to follow the implementations in parent classes.
+- Keep Functions Short: Should for one action not for multiple.
+
+**YAGNI**: You Aren’t Gonna Need It, Always implement things when you actually need them, never when you just foresee that you need them(Don’t build for tomorrow. Build for today).
+
+**LoD**: Law of Diameter. Only talk to your immediate friends, don't create method call chain (train wreak) to access a field which is part of another object which is much dipper in object hierarchy.
+
+Example: Getting price of first product from a customer shopping cart
+
+![img_36.png](resources/img_36.png)
+Money price = customer.getShoppingCart().getItems().get(0).getProduct().getPrice(); (wrong)
+
+- change in any methods or underling data structure can break the order service.
+- making change in any class required making changes in many other which have chain like this.
+
+Cons:
+
+- Each class endup having wrapper methods to get details from object it holds, but it gives loose coupling.
+
+**SoC**: Separation of Concerns, Each part of your system should do one thing and do it well.
+
+Example: A single class handling the data fetching from DB, validating it, modifying it and then rending on UI is perfect violation of SoC.
+we should have separate class/module to handle each piece of logic, data loading, validation/business logic, rendering on UI.
+
+**Cohesion & Coupling:** 
+
+- Cohesion: Cohesion measures how closely related and focused the responsibilities of a single module (like a class or a package) are. It is an internal quality of a module.
+we should aim for high cohesion always.
+- Coupling: Coupling measures the degree to which one module depends on the inner workings of another module. It is an external quality that describes the relationship between modules.
+we should aim for lower coupling always.
+
+
+
+## Singleton Design Pattern
+
+```text
+Singleton Pattern is a creational design pattern that guarantees a class has only one instance and provides a global point of access to it.
+```
+Examples: Database connections, thread pools, caches, configuration settings.
+
+Important considerations:
+
+- Instance creation from external objects must be blocked, can be achieved by making constructor private.
+
+![img_34.png](resources/img_34.png)
+
+**Implementations:**
+
+Eager Initialization: More resource heavy, instance will still be created if nowhere used.
+<details>
+<summary>View Java Code</summary>
+
+```java
+public class EagerSingleton {
+    //initialized at class load time
+    private static final EagerSingleton instance = new EagerSingleton();
+    
+    private EagerSingleton(){}
+    
+    public EagerSingleton getInstance(){
+        return instance;
+    }
+}
+```
+</details>
+
+Lazy Initialization: more efficient in terms of resource.
+<details>
+<summary>View Java Code</summary>
+
+```java
+public class LazySingleton {
+    static private volatile LazySingleton instance;
+
+    //objects can be created only inside this class.
+    private LazySingleton(){}
+
+    //Double check locking for thread safety
+    public static LazySingleton getInstance(){
+        if(instance == null){
+            synchronized (LazySingleton.class){
+                if(instance == null){
+                    instance = new LazySingleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+//Initialization-On-Demand Holder
+public class LazySingletonODH {
+    private LazySingletonODH(){}
+
+    //static class, Jvm heavy lift operation to make if thread safe and loaded only once
+    // so only one instance would have been created.
+    static class SingletonODH{
+        private static final LazySingletonODH instance = new LazySingletonODH();
+    }
+
+    public LazySingletonODH getInstance(){
+        return SingletonODH.instance;
+    }
+}
+```
+</details>
+
+![img_35.png](resources/img_35.png)
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
