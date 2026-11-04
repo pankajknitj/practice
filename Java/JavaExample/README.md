@@ -18,8 +18,9 @@
 **DRY:** Don't repeat youself, if any logic getting repeated more than 3 time, move that to shared utils.
 
 **KISS:** Keep it simple stupid (no Unnecessary abstractions, extra layers, and clever tricks). logic hard to understand -> more bugs introduced -> workarounds patched -> even more complex system.
+
 ways to apply KISS
-- Write Code for Humans, Not Machines
+- Write Code for Humans, Not Machines.
 - Avoid Premature Abstraction: create abstraction only when if have multiple implementations.
 - Favor Composition Over Inheritance: In multilevel inheritance it becomes hard to follow the implementations in parent classes.
 - Keep Functions Short: Should for one action not for multiple.
@@ -31,6 +32,7 @@ ways to apply KISS
 Example: Getting price of first product from a customer shopping cart
 
 ![img_36.png](resources/img_36.png)
+
 Money price = customer.getShoppingCart().getItems().get(0).getProduct().getPrice(); (wrong)
 
 - change in any methods or underling data structure can break the order service.
@@ -128,6 +130,120 @@ public class LazySingletonODH {
 </details>
 
 ![img_35.png](resources/img_35.png)
+
+## Builder Design Pattern
+
+```text
+The Builder Design pattern lets you construct complex objects step-by-step, separating the construction logic from the final representation.
+```
+
+Useful in situations where:
+
+- An object has many optional fields, and most callers only need a subset.
+- You want to avoid telescoping (many overloaded constructor calling) constructors or long parameter lists.
+- The object must be assembled through multiple steps, possibly in a specific order.
+
+![img_37.png](resources/img_37.png)
+
+Director is not always needed, it is needed when we required request object at many places with same configuration,so we can call director to construct the object with same configuration.
+Director can have multiple methods to construct the object with different configuration. example: simpleRequest(url), AuthenticationRequest(url, token), etc.
+
+![img_38.png](resources/img_38.png)
+
+## Factory Method Design Pattern
+
+```text
+The Factory Method Design Pattern provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.
+```
+
+Useful in situations where:
+
+- The exact type of object to be created isn't known until runtime.
+- Object creation logic is complex, repetitive, or needs encapsulation.
+- You want to follow the Open/Closed Principle, open for extension, closed for modification.
+
+**The Problem: Sending Notifications**
+
+We have many type of notifications to send, email, sms, push notification, etc.
+
+Naive Solution: 
+
+- Client itself decide which notification to use and send msg based on if-else/switch.
+- Or we can have simple Factory which creates notifications based on type, just adding abstraction and segregating creation
+
+Issues:
+
+- in both the approaches, code will be bloated with if-else/switch statements.
+- Addition of new notification type will requires to open the class and add new if-else.
+
+Solution: Factory Method Pattern, which tells to have a separate creator for each notification type.
+benefits:
+
+- Loosely coupled to client.
+- Open for extension but closed for modification.
+- No bloated if-else/switch statements.
+
+![img_39.png](resources/img_39.png)
+
+- Client will decode which concrete creator to be use to send the notification.
+<details>
+<summary>View Java Code</summary>
+
+```java
+public interface Notification {
+    public void send(String msg);
+}
+
+public abstract class AbstractNotificationCreator {
+    public abstract Notification createNotification();
+
+    //additional method.
+    public void notifyUser(String msg){
+        Notification notification = createNotification();
+        notification.send(msg);
+    }
+}
+```
+```java
+public class EmailNotificationCreator extends AbstractNotificationCreator {
+    @Override
+    public Notification createNotification() {
+        return new EmailNotification();
+    }
+}
+public class PushNotificationCreator extends AbstractNotificationCreator {
+    @Override
+    public Notification createNotification() {
+        return new PushNotification();
+    }
+}
+public class SlackNotificationCreator extends AbstractNotificationCreator {
+    @Override
+    public Notification createNotification() {
+        return new SlackNotification();
+    }
+}
+public class WhatsappNotificationCreator extends AbstractNotificationCreator {
+    @Override
+    public Notification createNotification() {
+        return new WhatsAppNotification();
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        String message = "Hello World!";
+
+        Notification emailNotification = new EmailNotificationCreator().createNotification();
+        Notification pushNotification = new PushNotificationCreator().createNotification();
+
+        emailNotification.send(message);
+        pushNotification.send(message);
+    }
+}
+```
+</details>
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
