@@ -2,6 +2,9 @@
 ## Table of Contents
 - [Design Principles](#Design-Principles)
 - [Singleton](#Singleton-Design-Pattern)
+- [Builder](#Builder-Design-Pattern)
+- [Factory Method](#Factory-Method-Design-Pattern)
+- [Abstract Factory](#Abstract-Factory-Design-Pattern)
 - [Strategy](#Strategy-Design-Pattern)
 - [Iterator](#Iterator-Design-Pattern)
 - [Observer](#Observer-Design-Pattern)
@@ -244,6 +247,199 @@ public class Client {
 }
 ```
 </details>
+
+## Abstract Factory Design Pattern
+
+```text
+The Abstract Factory Design Pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes.
+```
+![img_40.png](resources/img_40.png)
+
+Useful in situations where:
+- You need to create objects that must be used together (e.g., processing unit and storage of Azure and AWS).
+- Your system must support multiple configurations, environments, or product variants (e.g., AWS or Azure).
+
+Note: Factory Method deals with creating one product at a time. Abstract Factory deals with creating multiple products that must work together
+
+![img_41.png](resources/img_41.png)
+
+**Practical Example: Cloud Resource Configuration with either AWS or Azure**
+
+![img_42.png](resources/img_42.png)
+
+```java
+//abstract product class
+public abstract class Storage {
+    private final int capacity;
+    
+    Storage(int capacity){
+        this.capacity = capacity;
+    }
+    int getCapacity(){
+        return capacity;
+    }
+    abstract int getId();
+}
+//abstract Product class
+public abstract class Instance {
+    private final int capacity;
+    Instance(int capacity){
+        this.capacity = capacity;
+    }
+    int getCapacity(){
+        return capacity;
+    }
+    public abstract void start();
+    public abstract void stop();
+    public abstract void attacheStorage(Storage storage);
+}
+
+//abstract factory class
+public interface ResourceFactory {
+    Instance createInstance(int capacity);
+    Storage createStorage(int capacity);
+}
+```
+```java
+//concrete product class
+public class AwsStorage extends Storage{
+    private final int id;
+    public AwsStorage(int capacity) {
+        super(capacity);
+        id = (int) (Math.random() * 1000);
+    }
+    @Override
+    int getId() {
+        return id;
+    }
+}
+//concrete product class
+public class AwsInstance extends Instance{
+    private Storage storage;
+
+    public AwsInstance(int capacity) {
+        super(capacity);
+    }
+
+    @Override
+    public void start() {
+        System.out.println("Aws instance started");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("Aws instance stopped");
+    }
+
+    @Override
+    public void attacheStorage(Storage storage) {
+        this.storage = storage;
+        System.out.println("Aws instance attached to storage with id: " + storage.getId());
+    }
+}
+
+//concrete factory class
+public class AwsResourceFactory implements ResourceFactory{
+    @Override
+    public Instance createInstance(int capacity) {
+        return new AwsInstance(capacity);
+    }
+
+    @Override
+    public Storage createStorage(int capacity) {
+        return new AwsStorage(capacity);
+    }
+}
+```
+```java
+//concrete product class
+public class AzureStorage extends Storage{
+    private final int id;
+    public AzureStorage(int capacity) {
+        super(capacity);
+        id = (int) (Math.random() * 1000);
+    }
+
+    @Override
+    int getId() {
+        return id;
+    }
+}
+//concrete product class
+public class AzureInstance extends Instance{
+    private Storage storage;
+    public AzureInstance(int capacity) {
+        super(capacity);
+    }
+
+    @Override
+    public void start() {
+        System.out.println("Azure instance started");
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("Azure instance stopped");
+    }
+
+    @Override
+    public void attacheStorage(Storage storage) {
+        this.storage = storage;
+        System.out.println("Azure instance attached to storage with id: " + storage.getId());
+    }
+}
+//concrete factory class
+public class AzureResourceFactory implements ResourceFactory{
+    @Override
+    public Instance createInstance(int capacity) {
+        return new AzureInstance(capacity);
+    }
+
+    @Override
+    public Storage createStorage(int capacity) {
+        return new AzureStorage(capacity);
+    }
+}
+```
+```java
+//service that uses the abstract factory to provision resources
+public class ResourceService {
+    private final ResourceFactory resourceFactory;
+    private Instance instance;
+
+    public ResourceService(ResourceFactory resourceFactory) {
+        this.resourceFactory = resourceFactory;
+    }
+
+    public void provisionInstance(int instanceCapacity, int storageCapacity) {
+        instance = resourceFactory.createInstance(instanceCapacity);
+        Storage storage = resourceFactory.createStorage(storageCapacity);
+        instance.attacheStorage(storage);
+    }
+
+    public void startInstance() {
+        instance.start();
+    }
+    public void stopInstance() {
+        instance.stop();
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        //configuring AWS
+        ResourceService resourceService = new ResourceService(new AwsResourceFactory());
+        resourceService.provisionInstance(4, 100);
+        resourceService.startInstance();
+        
+        //configuring Azure
+        resourceService = new ResourceService(new AzureResourceFactory());
+        resourceService.provisionInstance(8, 200);
+        resourceService.startInstance();
+    }
+}
+```
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
