@@ -18,6 +18,7 @@ public class EmployeeFactory {
     );
    public static List<Employee> employees = Arrays.asList(
             new Employee("pankaj",26,"Tech",50000,addr1),
+            new Employee("pankaj1",26,"Tech",40000,addr1),
             new Employee("Chinky",28,"Tech-Operation",55000,addr2),
             new Employee("Abhishek",25,"Hr",40000,addr3)
     );

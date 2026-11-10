@@ -22,8 +22,8 @@ Stream.iterate(0, n->n+2)
 ```
 
 ### Type of intermediate operations:
-1. **Stateless:** Stream data will flow through this one by one (filter, map, distinct, limit, skip).
-2. **Stateful:** It will collect all the stream data and then apply these operation(sorted, distinct).
+1. **Stateless:** Process the element as independent (filter, map, flatmap, peek).
+2. **Stateful:** It depends on the previously processed element to process the current element, so maintain the state of all processed element(sorted, distinct, limit, skip).
 
 ### Ways to create Stream:
 1. From Collection: **list.stream()**

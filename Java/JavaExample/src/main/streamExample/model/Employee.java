@@ -41,6 +41,14 @@ public class Employee {
         this.addresses = addresses;
     }
 
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
     public String getDepartment() {
         return department;
     }
@@ -48,4 +56,5 @@ public class Employee {
     public void setDepartment(String department) {
         this.department = department;
     }
+
 }
