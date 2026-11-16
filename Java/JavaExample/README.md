@@ -267,6 +267,9 @@ Note: Factory Method deals with creating one product at a time. Abstract Factory
 
 ![img_42.png](resources/img_42.png)
 
+<details>
+<summary>View Java Code</summary>
+
 ```java
 //abstract product class
 public abstract class Storage {
@@ -440,6 +443,99 @@ public class Client {
     }
 }
 ```
+
+</details>
+
+## Prototype Design Pattern
+
+- lets you create new objects by cloning existing ones, instead of instantiating them from scratch.
+- preferable in scenario where Creating a new object is expensive, time-consuming, or resource-intensive and required many copies.
+- Self-cloning: The object itself knows how to create a copy of itself. No external code needs to understand its internal structure.
+- Decoupled creation: The client does not need to know the concrete class of the object it is cloning. It works through a common interface with a clone() method.
+
+**Shallow Copy:** Primitive field (int, float..) gets copied by value and references field gets copied by reference (list, map, obj..).
+
+**Deep Copy:** Everything copied by value and get duplicated recursively, prototype uses this.
+
+![img_50.png](resources/img_50.png)
+
+![img_51.png](resources/img_51.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+//prototype interface
+public interface Clonable<T> {
+    T clone();
+}
+
+public class EmailTemplate implements Clonable<EmailTemplate>{
+    private String sub;
+    private String body;
+    //mutable field
+    private RecipientList recipientList;
+
+    @Override
+    public EmailTemplate clone() {
+        return new EmailTemplate(sub,
+                body,
+                recipientList.deepCopy());
+    }
+
+    public void send(){
+        System.out.println("sent to: " + recipientList.getTo().toString());
+        System.out.println("copied to: " + recipientList.getCc().toString());
+    }
+}
+
+public class RecipientList {
+    private List<String> to;
+    private List<String> cc;
+
+    RecipientList deepCopy(){
+        return new RecipientList(new ArrayList<>(to), new ArrayList<>(cc));
+    }
+    public void addTo(String to){
+        this.to.add(to);
+    }
+    public void addCc(String cc){
+        this.cc.add(cc);
+    }
+}
+
+public static void main(String[] args) {
+    RecipientList baseRecipients = new RecipientList(
+            List.of("all@company.com"),
+            List.of("archive@company.com"));
+
+    EmailTemplate baseTemplate = new EmailTemplate(
+            "Company Newsletter", "Monthly updates from the team...", baseRecipients);
+
+    EmailTemplate marketingEmail = baseTemplate.clone();
+    marketingEmail.setSub("Marketing Newsletter");
+    marketingEmail.getRecipientList().addTo("marketing@company.com");
+
+    EmailTemplate engineeringEmail = baseTemplate.clone();
+    engineeringEmail.setSub("Engineering Newsletter");
+    engineeringEmail.getRecipientList().addTo("eng-team@company.com");
+
+    EmailTemplate hrEmail = baseTemplate.clone();
+    hrEmail.setSub("HR Newsletter");
+    hrEmail.getRecipientList().addTo("hr@company.com");
+    hrEmail.getRecipientList().addCc("ceo@company.com");
+
+    marketingEmail.send();
+    engineeringEmail.send();
+    hrEmail.send();
+
+    System.out.println("\nBase template unchanged:");
+    baseTemplate.send();
+}
+```
+
+</details>
+
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
