@@ -1,3 +1,92 @@
+## Synchronized Collection
+
+- **SynchronizedCollection()**: Its wrapper to wrap the collection in synchronized method, Creates a thread safe collection
+```java
+Collection<Integer> syncCollection = Collections.synchronizedCollection(new ArrayList<>());
+```
+
+Similarly for list, set and map we have other synchronized wrapper.
+
+- **synchronizedList()**
+```java
+ List<Integer> syncList = Collections.synchronizedList(new ArrayList<>());
+```
+- **synchronizedMap()**
+```java
+ Map<Integer, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+```
+- **synchronizedSortedMap()**
+```java
+ Map<Integer, String> syncSortedMap = Collections.synchronizedSortedMap(new TreeMap<>());
+```
+- **synchronizedSet()**
+```java
+Set<Integer> syncSet = Collections.synchronizedSet(new HashSet<>());
+```
+- **synchronizedSortedSet()**
+```java
+SortedSet<Integer> syncSortedSet = Collections.synchronizedSortedSet(new TreeSet<>());
+```
+### Concurrent Collection
+part of java.util.concurrent package
+
+**Map:**
+- **ConcurrentHashMap:** thread safe version of HashMap.
+```java
+ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
+```
+- **ConcurrentSkipListMap**: Thread safe TreeMap.
+```java
+ ConcurrentSkipListMap<Integer, String> map = new ConcurrentSkipListMap<>();
+```
+**ArraysList:**
+- **CopyOnWriteArrayList:** Thread safe list, where a new copy of the list is created whenever it is modified, same methods are present here.
+```java
+CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+```
+**Set:**
+- CopyOnWriteArraySet → HashSet
+- ConcurrentSkipListSet → TreeSet
+
+**Queue / Deque**:
+- **BlockingQueue**: for producer consumer problem, it blocks the consumer when q is empty and producer when q is full.
+  - put() and take() are blocking operations.
+```java
+public static void main(String[] args) throws InterruptedException {
+    //declaration
+  BlockingQueue<Integer> bq = new ArrayBlockingQueue<Integer>(2);
+  //consumer
+  new Thread(()->{
+    while(true){
+      try {
+        System.out.println(bq.take());
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }).start();
+  
+  //produce
+  bq.put(10);
+  bq.put(20);
+}
+```
+- **ConcurrentLinkedQueue & ConcurrentLinkedDeque**: Non-blocking queue, uses lock free algorithms.
+```java
+ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
+```
+
+### Synchronized vs Concurrent Collections
+- Synchronized Collection:
+  - Implemented by intrinsic lock, by synchronized block/method.
+  - it lock entire collection.
+  - slow as compare to concurrent collection.
+- Concurrent Collection:
+  - Achieve thread-safety by dividing their data into segments and lock will be acquired on a segment instead of whole collection.
+  - Multiple thread can perform operation by acquiring locks on different segment
+  - Fast as compare to synchronized collection.
+
+
 ## CompletableFuture
 - Introduced in java-8 to overcome the limitations of Future.
 - Both CompletableFuture<T> implements Future<T> and CompletionStage<T>

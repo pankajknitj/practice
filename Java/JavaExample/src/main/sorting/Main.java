@@ -9,11 +9,14 @@ package main.sorting;
 
  *******************************************************************************/
 import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.stream.Stream;
 
 public class Main
 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int[] arr = new int[]{1,2,9,8,5,3,6,78};
         int[] copy;
 
@@ -41,6 +44,21 @@ public class Main
         quickhoreSort(copy,0,copy.length-1);
         print(copy);
 
+
+        BlockingQueue<Integer> bq = new ArrayBlockingQueue<Integer>(2);
+
+        new Thread(()->{
+            while(true){
+                try {
+                    System.out.println(bq.take());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+        bq.put(10);
+        bq.put(20);
     }
     public static void quickLomutoSort(int[] arr,int l,int h){
         if(l<h){
