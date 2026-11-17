@@ -156,7 +156,7 @@ Director can have multiple methods to construct the object with different config
 ## Factory Method Design Pattern
 
 ```text
-The Factory Method Design Pattern provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.
+The Factory Method Pattern takes the idea of object creation and hands it off to subclasses. Instead of one central factory deciding what to create, you delegate the responsibility to specialized classes that know exactly what they need to produce.
 ```
 
 Useful in situations where:
