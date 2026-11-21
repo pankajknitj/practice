@@ -900,10 +900,184 @@ Types of Proxies
 
 Problem: Loading image, user first sees the thumbnails and when click then loads the complete image.
 
+![img_62.png](resources/img_62.png)
+
+
+<details>
+<summary>View Java Code</summary>
+
 ```java
+public interface Image {
+    String getFileName();
+    void display() throws InterruptedException;
+}
 
+public class HighResolutionImage implements Image{
+    private String fileName;
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Displaying image: " + fileName);
+    }
+}
 ```
+```java
+public class ImageProxy implements Image{
+    private String fileName;
+    private HighResolutionImage image;
 
+    public ImageProxy(String name){
+        fileName = name;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public void display() throws InterruptedException {
+        if(image == null){
+            System.out.println("Loading Image: " + fileName);
+            Thread.sleep(500);
+            image = new HighResolutionImage(fileName);
+        }
+        image.display();
+    }
+}
+
+public static void main(String[] args) throws InterruptedException {
+    Image proxyImage = new ImageProxy("image1.png");
+
+    proxyImage.display();
+}
+```
+</details>
+
+## Bridge Design Pattern
+
+The Bridge Pattern’s intent is to decouple an abstraction from its implementation so that the two can vary independently. It puts
+the abstraction and implementation into two different class hierarchies so that both can be extend independently.
+
+![img_63.png](resources/img_63.png)
+
+Problem: Have to build the Central and Gear Locking system for a X model car of company CA.
+
+Naive Approach: Define a Interface for Locking with 2 concrete Implementation CAXCentralLocking and CAXGearLocking.
+The problem with this approach is, if new company comes with different model and want locking system we have to build the classes again.
+
+Bridge pattern:
+Note: BigWheel and Motoren are 2 different car company.
+
+![img_64.png](resources/img_64.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+public interface Product {
+    String productName();
+    //produce the locking
+    void produce();
+}
+public class CentralLocking implements Product {
+    private String productName;
+
+    @Override
+    public String productName() {
+        return productName;
+    }
+
+    @Override
+    public void produce() {
+        System.out.println("Producing central locking system");
+    }
+}
+public class GearLocking implements Product {
+    private String productName;
+
+    @Override
+    public String productName() {
+        return productName;
+    }
+
+    @Override
+    public void produce() {
+        System.out.println("Producing gear locking system");
+    }
+}
+```
+```java
+public abstract class Car {
+    protected Product product;
+    protected String model;
+
+    Car(Product product, String model){
+        this.product = product;
+        this.model = model;
+    }
+
+    public abstract void assemble();
+    public abstract void  produceProduct();
+
+    public void printDetails(){
+        System.out.println("Car model: " + model + "Assembled with " + product.productName());
+    }
+}
+public class BigWheel extends Car{
+    public BigWheel(Product product, String model){
+        super(product,model);
+    }
+    @Override
+    public void assemble() {
+        System.out.println("Assembling " + model + " with " + product.productName() );
+    }
+
+    @Override
+    public void produceProduct() {
+        System.out.println("Producing for " + model);
+        product.produce();
+    }
+}
+public class Motoren extends Car{
+    public Motoren(Product product, String model){
+        super(product,model);
+    }
+    @Override
+    public void assemble() {
+        System.out.println("Assembling " + model + " with " + product.productName() );
+    }
+
+    @Override
+    public void produceProduct() {
+        System.out.println("Producing for " + model);
+        product.produce();
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        Product p1 = new CentralLocking("Central Locking system");
+        Product p2 = new GearLocking("Gear Locking system");
+
+        Car bigwheel = new BigWheel(p1, "XYZ");
+        Car motoren = new Motoren(p2,"MYX");
+
+        bigwheel.produceProduct();
+        bigwheel.assemble();
+
+        motoren.produceProduct();
+        motoren.assemble();
+    }
+}
+```
+</details>
 
 ## Strategy Design Pattern
 This pattern becomes valuable when:
