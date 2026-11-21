@@ -1079,6 +1079,99 @@ public class Client {
 ```
 </details>
 
+## Flyweight Design Pattern
+
+structural pattern that focuses on efficiently sharing common parts of object state across many objects to reduce memory usage and boost performance.
+
+Useful in scenario
+- You need to create a large number of similar objects, but most of their data is shared or repeated.
+- Storing all object data individually would result in high memory consumption.
+- You want to separate intrinsic state (shared, reusable data) from extrinsic state (context-specific, passed in at runtime).
+
+2 characteristics:
+- Intrinsic/extrinsic state separation. 
+- Factory-managed caching: Shared part instantiate by the factory which manages and caches the created part.
+
+Problem: Game Forest Rendering, we have a forest which have many trees of few types.
+
+![img_65.png](resources/img_65.png)
+
+```java
+public class Tree {
+    //Intrinsic state
+    private TreeType type;
+    //Extrinsic state
+    private int x;
+    private int y;
+    public void plant(){
+        type.plant(x,y);
+    }
+}
+public class Forest {
+    private final TreeTypeFactory factory;
+    private final List<Tree> trees = new ArrayList<>();
+
+    public Forest(TreeTypeFactory factory){
+        this.factory = factory;
+    }
+
+    public void addTree(String name, String color, String texture, int x, int y){
+        TreeType type = factory.getTreeType(name, color,texture);
+        trees.add(new Tree(type,x,y));
+    }
+    public void makeForest(){
+        trees.forEach(Tree::plant);
+    }
+}
+```
+```java
+public interface TreeType {
+    void plant(int x, int y);
+}
+public class ConcreteTreeType implements TreeType {
+    private String name;
+    private String color;
+    private String texture;
+
+    @Override
+    public void plant(int x, int y) {
+        System.out.printf("Planting tree at %s,%s, name: %s, color: %s, texture: %s%n", x,y,name,color,texture);
+    }
+}
+public class TreeTypeFactory {
+    Map<String, TreeType> cache = new HashMap<>();
+
+    public TreeType getTreeType(String name, String color, String texture){
+        String key = name + color + texture;
+        if(!cache.containsKey(key)){
+            cache.put(key, new ConcreteTreeType(name,color, texture));
+        }
+        return cache.get(key);
+    }
+    public int getCount(){
+        return cache.size();
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        TreeTypeFactory factory = new TreeTypeFactory();
+        Forest forest = new Forest(factory);
+
+        forest.addTree("T1","Red","light", 0,0);
+        forest.addTree("T1","Red","light", 0,1);
+        forest.addTree("T1","Red","light", 0,2);
+
+        forest.addTree("T2","Green","light", 0,3);
+        forest.addTree("T2","Green","light", 0,4);
+        forest.addTree("T2","Green","light", 0,5);
+
+        System.out.println(factory.getCount());
+        forest.makeForest();
+    }
+}
+```
 ## Strategy Design Pattern
 This pattern becomes valuable when:
 - You have multiple ways to perform the same operation, and the choice might change at runtime.
