@@ -153,6 +153,92 @@ Director can have multiple methods to construct the object with different config
 
 ![img_38.png](resources/img_38.png)
 
+<details>
+<summary>View Java Code</summary>
+
+```java
+public class HttpRequest {
+    //Mandatory fields
+    private String url;
+
+    //optional fields
+    private String method;
+    private String body;
+    private Map<String,String> headers;
+    private Map<String,String> queryParams;
+    private double timeout;
+
+    public String toString(){
+        return "HttpRequest{url='"+url+"', method='"+method+"', body='"+body+"', headers="+headers+", queryParams="+queryParams+", timeout="+timeout+"}";
+    }
+
+    //private constructor to enforce the use of builder
+    private HttpRequest(HttpRequestBuilder builder){
+        this.url = builder.url;
+        this.method = builder.method;
+        this.body = builder.body;
+        this.headers = builder.headers;
+        this.queryParams = builder.queryParams;
+        this.timeout = builder.timeout;
+    }
+
+    //Builder class to construct HttpRequest objects
+    public static class HttpRequestBuilder{
+        private String url;
+        private String method;
+        private String body;
+        private Map<String,String> headers;
+        private Map<String,String> queryParams;
+        private double timeout;
+
+        public HttpRequestBuilder(String url){
+            this.url = url;
+        }
+
+        public HttpRequestBuilder method(String method){
+            this.method = method;
+            return this;
+        }
+
+        public HttpRequestBuilder body(String body){
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequestBuilder headers(Map<String,String> headers){
+            this.headers = headers;
+            return this;
+        }
+
+        public HttpRequestBuilder queryParams(Map<String,String> queryParams){
+            this.queryParams = queryParams;
+            return this;
+        }
+
+        public HttpRequestBuilder timeout(double timeout){
+            this.timeout = timeout;
+            return this;
+        }
+
+        public HttpRequest build(){
+            return new HttpRequest(this);
+        }
+    }
+}
+```
+```java
+public static void main(String[] args) {
+        HttpRequest.HttpRequestBuilder builder = new HttpRequest.HttpRequestBuilder("https://example.com")
+                .method("POST")
+                .body("{\"key\":\"value\"}")
+                .timeout(30.0);
+
+        HttpRequest request = builder.build();
+        System.out.println(request);
+    }
+```
+</details>
+
 ## Factory Method Design Pattern
 
 ```text
@@ -535,6 +621,288 @@ public static void main(String[] args) {
 ```
 
 </details>
+
+## Adapter Design Pattern
+
+- Acts as a wrapper bw client and the incompatible class (can be third party).
+- Interface translation and No source modification is major benefits as it make a incompatible class compatible without modification to source.
+
+Example: we have a PaymentProcessor interface with some methods used in the checkout service and have few concrete implementation.
+
+```java
+interface PaymentProcessor {
+    void processPayment(double amount, String currency);
+    boolean isPaymentSuccessful();
+    String getTransactionId();
+}
+```
+Now a requirement came to onboard another payment gateway but their interface in completely different with different methods to achieve the same task.
+So, we have write a adapter which can internally call the new gateway methods to perform the task.
+
+### Two types of adapter
+
+- Object Adapter (Composition) - prefered.
+
+![img_52.png](resources/img_52.png)
+
+- Class Adapter, called 2 way adapter, it extends the adaptee class implements the target interface.
+
+![img_53.png](resources/img_53.png)
+
+
+## Facade Design Pattern
+
+- We use façade when using our subsystem requires dealing with lots of classes and interfaces for the client. Using façade, we provide a simple interface that provides the same functionality.
+- Façade is not a simple method forwarding, but façade methods encapsulate the subsystem class interactions, which otherwise would have been done by client code.
+- Façades are often added over existing legacy code to simplify code usage and reduce coupling of client code to legacy code.
+
+![img_54.png](resources/img_54.png)
+
+![img_55.png](resources/img_55.png)
+
+## Decorator Design Pattern
+
+The Decorator pattern is a structural pattern that attaches additional responsibilities to an object dynamically. Instead of extending a class through inheritance, it wraps the original object inside another object that adds the new behavior.
+
+Two characteristics define the pattern:
+- **Same interface preservation:** Every decorator implements the same interface as the object it wraps. The client cannot tell whether it is talking to a plain object or a decorated one.
+- **Dynamic composition:** Decorators can be stacked at runtime in any combination and any order. You choose what to add and when, not at compile time.
+
+Example: Think of a plain coffee. Now add milk. Now add sugar. Each addition enhances the original but doesn’t change the base.
+The Decorator Pattern works the same way: stacking behaviors while keeping the core intact.
+
+![img_56.png](resources/img_56.png)
+
+Practical Example: Rendering text on the editor which supports bolt, italic and underlined.
+
+Naive: keep a plainText as Base and subclass for each combination, this will lead to many classes.
+
+![img_57.png](resources/img_57.png)
+
+Efficient Approach: create decorator for each text style.
+
+Another Example: Coffee machine, which adds the price based on requirement, coffee with sugar, milk, cream.
+
+![img_60.png](resources/img_60.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+public interface Coffee {
+    double getCost();
+    String getDescription();
+}
+
+public class SimpleCoffee implements Coffee{
+    private double price;
+    @Override
+    public double getCost() {
+        return price;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Coffee is made up with Coffee beans";
+    }
+}
+```
+```java
+public abstract class AbstractCoffeeDecorator implements Coffee {
+    Coffee coffee;
+
+    public AbstractCoffeeDecorator(Coffee coffee){
+        this.coffee = coffee;
+    }
+}
+public class MilkyCoffee extends AbstractCoffeeDecorator{
+    public MilkyCoffee(Coffee coffee){
+        super(coffee);
+    }
+    @Override
+    public double getCost() {
+        return 12.43 + coffee.getCost();
+    }
+
+    @Override
+    public String getDescription() {
+        return coffee.getDescription() + ", milk";
+    }
+}
+public class CreamyCoffee extends AbstractCoffeeDecorator{
+    public CreamyCoffee(Coffee coffee){
+        super(coffee);
+    }
+    @Override
+    public double getCost() {
+        return 10 + coffee.getCost();
+    }
+
+    @Override
+    public String getDescription() {
+        return coffee.getDescription() + ", Cream";
+    }
+}
+```
+```java
+public class Client {
+    public static void main(String[] args) {
+        Coffee coffee = new SimpleCoffee(69.76);
+        //adding milk
+        coffee = new MilkyCoffee(coffee);
+        //adding cream
+        coffee = new CreamyCoffee(coffee);
+
+        System.out.println(coffee.getDescription());
+        System.out.println(coffee.getCost());
+    }
+}
+```
+</details>
+
+## Composite Design Pattern
+
+It composes objects into tree structures and lets clients treat individual objects and compositions uniformly.
+
+Two characteristics define the pattern:
+- **Uniform interface:** Both leaf objects (no children) and composite objects (contain children) implement the same interface. The client calls the same methods regardless of which type it is working with.
+- **Recursive composition:** A composite holds a collection of components, which can themselves be composites. This creates tree structures of arbitrary depth without any special handling.
+![img_59.png](resources/img_59.png)
+
+![img_58.png](resources/img_58.png)
+
+<details>
+<summary>View Java Code</summary>
+
+```java
+interface FileSystemItem {
+    int getSize();
+    void printStructure(String indent);
+    void delete();
+}
+
+class File implements FileSystemItem {
+    private final String name;
+    private final int size;
+
+    public File(String name, int size) {
+        this.name = name;
+        this.size = size;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public void printStructure(String indent) {
+        System.out.println(indent + "- " + name + " (" + size + " KB)");
+    }
+
+    @Override
+    public void delete() {
+        System.out.println("Deleting file: " + name);
+    }
+}
+
+class Folder implements FileSystemItem {
+    private final String name;
+    private final List<FileSystemItem> children = new ArrayList<>();
+
+    public Folder(String name) {
+        this.name = name;
+    }
+
+    public void addItem(FileSystemItem item) {
+        children.add(item);
+    }
+
+    public void removeItem(FileSystemItem item) {
+        children.remove(item);
+    }
+
+    @Override
+    public int getSize() {
+        int total = 0;
+        for (FileSystemItem item : children) {
+            total += item.getSize();
+        }
+        return total;
+    }
+
+    @Override
+    public void printStructure(String indent) {
+        System.out.println(indent + "+ " + name + "/");
+        for (FileSystemItem item : children) {
+            item.printStructure(indent + "  ");
+        }
+    }
+
+    @Override
+    public void delete() {
+        for (FileSystemItem item : children) {
+            item.delete();
+        }
+        System.out.println("Deleting folder: " + name);
+    }
+}
+```
+```java
+public class FileExplorerApp {
+    public static void main(String[] args) {
+        FileSystemItem file1 = new File("readme.txt", 5);
+        FileSystemItem file2 = new File("photo.jpg", 1500);
+        FileSystemItem file3 = new File("data.csv", 300);
+
+        Folder documents = new Folder("Documents");
+        documents.addItem(file1);
+        documents.addItem(file3);
+
+        Folder pictures = new Folder("Pictures");
+        pictures.addItem(file2);
+
+        Folder home = new Folder("Home");
+        home.addItem(documents);
+        home.addItem(pictures);
+
+        System.out.println("---- File Structure ----");
+        home.printStructure("");
+
+        System.out.println("\nTotal Size: " + home.getSize() + " KB");
+
+        System.out.println("\n---- Deleting All ----");
+        home.delete();
+    }
+}
+```
+</details>
+
+## Proxy Design Pattern
+
+It provides a surrogate or placeholder for another object to control access to it.
+Instead of the client interacting directly with the real object, it interacts with a proxy that implements the same interface.
+The proxy decides when and how to forward requests to the real object.
+
+Useful in below scenario without changing the original class.
+- Need lazy loading
+- Restricted access (Authorization, rate limiting)
+- cross cutting behaviour (logging, monitoring)
+
+![img_61.png](resources/img_61.png)
+
+Types of Proxies
+- Virtual Proxy: Defers creation of the real object until it’s actually needed (lazy loading).
+- Protection Proxy: Performs permission checks before allowing access to certain operations.
+- Remote Proxy: Handles communication between local and remote objects over a network.
+- Caching Proxy: Caches expensive results and avoids repeated calls to the real subject.
+- Smart Proxy: Adds logging, reference counting, or monitoring before/after method calls.
+
+Problem: Loading image, user first sees the thumbnails and when click then loads the complete image.
+
+```java
+
+```
 
 
 ## Strategy Design Pattern
